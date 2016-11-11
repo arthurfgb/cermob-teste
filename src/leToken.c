@@ -117,7 +117,7 @@ int searchTokenLabel(CK_SESSION_HANDLE hSession, CK_SLOT_ID_PTR pSlotList, CK_UL
             printf("Token invalido: %d", i);
             continue;
         }
-        
+
         if (strcmp(tokenInfo.label, tokenLabel)){
 
             printf(
@@ -159,7 +159,7 @@ CK_RV signData(
     CK_UTF8CHAR tokenLabel,
 	char* ckaLabel,
 	char* pin,
-	char* inName) 
+	char* inName)
 {
 
 }
@@ -172,7 +172,7 @@ int main(int argc, char** argv )
         CK_OBJECT_HANDLE_PTR phPublicKey;
 
         CK_SESSION_HANDLE hSession;
-        
+
 
         CK_RV rv;
 
@@ -185,7 +185,7 @@ int main(int argc, char** argv )
             printf("Erro ao inicializar\n\n");
             return rv;
         }
-        
+
 
         // retorna o numero de slots, mas não a lista deles
         rv = C_GetSlotList(CK_TRUE, NULL, &pulCount);
@@ -195,12 +195,12 @@ int main(int argc, char** argv )
             return rv;
         }
         else {
-            
+
             pSlotList = (CK_SLOT_ID_PTR) malloc(pulCount*sizeof(CK_SLOT_ID));
             rv = C_GetSlotList(CK_TRUE, pSlotList, &pulCount);
 
             if (rv == CKR_OK) {
-                
+
                 char* tokenLabel =  "qualiconsult";
 
                 if (searchTokenLabel(hSession, pSlotList, pulCount, tokenLabel) == 1)
@@ -220,9 +220,9 @@ int main(int argc, char** argv )
 
                         free(phPublicKey);
                     }
-                } 
+                }
 
-                
+
 
             }
             else{
