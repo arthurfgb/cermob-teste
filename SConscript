@@ -1,3 +1,51 @@
+f env.debug == '1':
+	print 'debug'
+	env.destDir = 'debug'
+	if env['PLATFORM'] == 'win32':
+		env['CCFLAGS'] = ['/MTd', '/Od','/FD', '/EHsc', '/W2', '/nologo', '/c']
+		env['LINKFLAGS'] = ['/NODEFAULTLIB:libcmt.lib']
+	else:
+		env['CCFLAGS'] = ['-ggdb', '-Wall', '-fPIC', '-pipe']
+else:
+	print 'release'
+	env.destDir = 'release'
+	if env['PLATFORM'] == 'win32':
+		env['CCFLAGS'] = ['/MT', '/Od']
+	else:
+		env['CCFLAGS'] = ['-O0', '-Wall', '-fPIC']
+
+if env['PLATFORM'] == 'win32':
+	env['CPPDEFINES'] = [
+		('WIN32', 1),
+		('_CRT_SECURE_NO_DEPRECATE', 1),
+		('_LIB', 1),
+		('DEBUG', env.debug),
+		('SIGN_UPDATE', 1)
+	]
+else:
+	env['CPPDEFINES'] = [
+		('DEBUG', env.debug),
+		('SIGN_UPDATE', 1)
+	]
+
+Export('env');
+
+if env.install == '0':
+	env.SConscript('libmusclecard/SConscript')
+	env.SConscript('sha1/SConscript')
+	env.SConscript('src/SConscript')
+	if ARGUMENTS.get('prog', '0') == '1':
+		env.SConscript('programas/SConscript')
+		#env.SConscript('muscleTool/trunk/SConscript')
+	if ARGUMENTS.get('prog', '0') == '2':
+		env.SConscript('programas_teste/SConscript')
+else:
+	if env['PLATFORM'] != 'win32':
+		env.Command('libqualipkcs11.so', env.destDir + '/lib/libqualipkcs11.so', "sudo -u root cp $SOURCE /usr/lib/$TARGET")
+		env.Command('teste', env.destDir, "sudo -u root cp $SOURCE/bin/* /usr/bin")
+
+
+
 import os;
 Import('*')
 
